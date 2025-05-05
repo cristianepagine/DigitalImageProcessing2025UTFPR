@@ -139,10 +139,18 @@ def main ():
     print ('Tempo: %f' % (timeit.default_timer () - start_time))
     print ('%d componentes detectados.' % n_componentes)
 
-    # Mostra os objetos encontrados.
-    for c in componentes:
-        cv2.rectangle (img_out, (c ['L'], c ['T']), (c ['R'], c ['B']), (0,0,1))
+    # Mostra os objetos encontrados com retangulos.
+    #for c in componentes:
+     #   cv2.rectangle (img_out, (c ['L'], c ['T']), (c ['R'], c ['B']), (0,0,1))
+     
+    # Convertemos a imagem binária para uint8 para usar com findContours
+    img_bin_uint8 = (img * 255).astype(np.uint8)
 
+    # Encontrar contornos
+    contornos, _ = cv2.findContours(img_bin_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Desenhar os contornos
+    cv2.drawContours(img_out, contornos, -1, (0, 0, 1), 1)
     cv2.imshow ('02 - out', img_out)
     cv2.imwrite ('02 - out.png', img_out*255)
     cv2.waitKey ()
